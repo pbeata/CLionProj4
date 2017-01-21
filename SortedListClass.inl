@@ -221,4 +221,11 @@ void SortedListClass<T>::insertValue(const T &valToInsert)
   //delete(temp);
 }
 
+//Prints the contents of the list from head to tail to the screen.
+template< class T >
+void SortedListClass<T>::printForward() const
+{
+  std::cout << "*WARNING: printForward() is incomplete!" << std::endl;
+}
+
 // std::cout << " " << std::endl;

@@ -65,7 +65,12 @@ int main()
   newList.insertValue(200);
   newList.insertValue(2000);
 
+  // test the printers
+  myList.printForward();
+  newList.printForward();
+
   // todo: fix the clear function
+  // done: fixed clear() on 01-21-17
   newList.clear();
   myList.clear();
 
