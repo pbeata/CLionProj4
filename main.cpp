@@ -36,9 +36,6 @@ int main()
   std::cout << B->getPrev() << std::endl;
   std::cout << B->getNext() << std::endl;
 
-  // initialize a new sorted list class object
-  SortedListClass<int> myList;
-
   if (A->getValue() < B->getValue())
   {
     std::cout << "A < B" << std::endl;
@@ -48,17 +45,33 @@ int main()
     std::cout << "A > B" << std::endl;
   }
 
+  // initialize a new sorted list class object
+  SortedListClass<int> myList;
+
+  myList.insertValue(200);
   myList.insertValue(100);
+  myList.insertValue(300);
+  myList.insertValue(200);
+
   SortedListClass<int> newList(myList);
 
-  //newList.clear();
-  //myList.clear();
+  myList.insertValue(1);
+  myList.insertValue(3000);
+  myList.insertValue(400);
+  myList.insertValue(3000);
+  myList.insertValue(400);
+
+  std::cout << "  newList" << std::endl;
+  newList.insertValue(200);
+  newList.insertValue(2000);
+
+  // todo: fix the clear function
+  newList.clear();
+  myList.clear();
 
   delete(A);
   delete(B);
   delete(C);
-  //delete(myList);
-  //delete(newList);
 
   return 0;
 }

@@ -53,6 +53,13 @@ void LinkedNodeClass<T>::setPreviousPointerToNull()
 template< class T >
 void LinkedNodeClass<T>::setBeforeAndAfterPointers()
 {
-  (*prevNode).nextNode = this;
-  (*nextNode).prevNode = this;
+  if (prevNode != NULL)
+  {
+    (*prevNode).nextNode = this;
+  }
+
+  if (nextNode != NULL)
+  {
+    (*nextNode).prevNode = this;
+  }
 }
