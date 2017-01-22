@@ -52,6 +52,7 @@ int main()
   myList.insertValue(100);
   myList.insertValue(300);
   myList.insertValue(200);
+  std::cout << "number of items in list = " << myList.getNumElems() << "\n";
 
   SortedListClass<int> newList(myList);
 
@@ -75,16 +76,36 @@ int main()
   std::cout << "\n\n" << std::endl;
   newList.printBackward();
   std::cout << "\n\n" << std::endl;
+  std::cout << "number of items in list = " << myList.getNumElems() << "\n";
 
   // test removeFront
   int rmFront;
   myList.removeFront(rmFront);
   std::cout << "removed from front: " << rmFront << "\n\n";
+  std::cout << "number of items in list = " << myList.getNumElems() << "\n";
 
   // test removeLast
   int rmLast;
   myList.removeLast(rmLast);
   std::cout << "removed from back: " << rmLast << "\n\n";
+  std::cout << "number of items in list = " << myList.getNumElems() << "\n";
+
+  // test getElemAtIndex function
+  int getVals;
+  std::cout << myList.getElemAtIndex(0, getVals) << "\n";
+  std::cout << getVals << "\n";
+  std::cout << myList.getElemAtIndex(-1, getVals) << "\n";
+  std::cout << getVals << "\n";
+  std::cout << myList.getElemAtIndex(22, getVals) << "\n";
+  std::cout << getVals << "\n";
+  std::cout << myList.getElemAtIndex(4, getVals) << "\n";
+  std::cout << getVals << "\n";
+  std::cout << myList.getElemAtIndex(7, getVals) << "\n";
+  std::cout << getVals << "\n";
+  std::cout << myList.getElemAtIndex(8, getVals) << "\n";
+  std::cout << getVals << "\n";
+  std::cout << myList.getElemAtIndex(6, getVals) << "\n";
+  std::cout << getVals << "\n";
 
   // todo: fix the clear function
   // done: fixed clear() on 01-21-17

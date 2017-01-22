@@ -268,4 +268,65 @@ bool SortedListClass<T>::removeLast(T &theVal)
   }
 }
 
-// std::cout << " " << std::endl;
+//Returns the number of nodes contained in the list.
+template< class T >
+int SortedListClass<T>::getNumElems() const
+{
+  int count = 0;
+  LinkedNodeClass<T> *temp = head;
+
+  if (temp == 0)
+  {
+    std::cout << "this list is empty so count is zero \n";
+  }
+  else
+  {
+    bool endOfList = false;
+    while (!endOfList)
+    {
+      count++;
+      if (temp->getNext() != 0)
+      {
+        temp = temp->getNext();
+      }
+      else
+      {
+        endOfList = true;
+      }
+    }
+  }
+
+  return count;
+}
+
+//Provides the value stored in the node at index provided in the
+//"index" parameter. If the index is out of range, then outVal
+//remains unchanged and false is returned. Otherwise, the function
+//returns true, and the reference parameter outVal will contain
+//a copy of the value at that location.
+template< class T >
+bool SortedListClass<T>::getElemAtIndex(const int index, T &outVal)
+{
+  // count the number of elements in the list
+  const int NELEMS = getNumElems();
+
+  // check if index is out of range
+  // note:  indices must be within range [0, NELEMS-1]
+  if (index < 0 || index > NELEMS - 1)
+  {
+    return false;
+  }
+  else
+  {
+    int count = 0;
+    LinkedNodeClass<T> *temp = head;
+    while (count != index)
+    {
+      temp = temp->getNext();
+      count++;
+    }
+    outVal = temp->getValue();
+    return true;
+  }
+
+}
