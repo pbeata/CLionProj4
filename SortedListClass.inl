@@ -193,9 +193,6 @@ void SortedListClass<T>::printForward() const
 }
 
 //Prints the contents of the list from tail to head to the screen.
-//Begins with a line reading "Backward List Contents Follow:", then
-//prints one list element per line, indented two spaces, then prints
-//the line "End Of List Contents" to indicate the end of the list.
 template< class T >
 void SortedListClass<T>::printBackward() const
 {
@@ -227,5 +224,48 @@ void SortedListClass<T>::printBackward() const
   }
 }
 
+//Removes the front item from the list and returns the value that
+//was contained in it via the reference parameter.
+template< class T >
+bool SortedListClass<T>::removeFront(T &theVal)
+{
+  LinkedNodeClass<T> *temp = head;
+  if (temp == 0)
+  {
+    // list was empty
+    return false;
+  }
+  else
+  {
+    head = temp->getNext();
+    theVal = temp->getValue();
+    (temp->getNext())->setPreviousPointerToNull();
+    temp->setNextPointerToNull();
+    delete(temp);
+    return true;
+  }
+}
+
+//Removes the last item from the list and returns the value that
+//was contained in it via the reference parameter.
+template< class T >
+bool SortedListClass<T>::removeLast(T &theVal)
+{
+  LinkedNodeClass<T> *temp = tail;
+  if (temp == 0)
+  {
+    // list was empty
+    return false;
+  }
+  else
+  {
+    tail = temp->getPrev();
+    theVal = temp->getValue();
+    (temp->getPrev())->setNextPointerToNull();
+    temp->setNextPointerToNull();
+    delete(temp);
+    return true;
+  }
+}
 
 // std::cout << " " << std::endl;

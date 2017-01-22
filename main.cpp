@@ -76,6 +76,16 @@ int main()
   newList.printBackward();
   std::cout << "\n\n" << std::endl;
 
+  // test removeFront
+  int rmFront;
+  myList.removeFront(rmFront);
+  std::cout << "removed from front: " << rmFront << "\n\n";
+
+  // test removeLast
+  int rmLast;
+  myList.removeLast(rmLast);
+  std::cout << "removed from back: " << rmLast << "\n\n";
+
   // todo: fix the clear function
   // done: fixed clear() on 01-21-17
   newList.clear();
