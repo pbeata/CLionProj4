@@ -66,8 +66,15 @@ int main()
   newList.insertValue(2000);
 
   // test the printers
+  std::cout << "\n\n" << std::endl;
   myList.printForward();
+  std::cout << "\n\n" << std::endl;
   newList.printForward();
+  std::cout << "\n\n" << std::endl;
+  myList.printBackward();
+  std::cout << "\n\n" << std::endl;
+  newList.printBackward();
+  std::cout << "\n\n" << std::endl;
 
   // todo: fix the clear function
   // done: fixed clear() on 01-21-17

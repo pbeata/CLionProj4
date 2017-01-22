@@ -59,8 +59,7 @@ SortedListClass<T>::SortedListClass(const SortedListClass< T > &rhs)
   }
 }
 
-//Clears the list to an empty state without resulting in any
-//memory leaks.
+//Clears the list to an empty state without resulting in any memory leaks.
 template< class T >
 void SortedListClass<T>::clear()
 {
@@ -103,129 +102,130 @@ template< class T >
 void SortedListClass<T>::insertValue(const T &valToInsert)
 {
   bool found = false;
-  int check = 0;
 
+  if (head == NULL || tail == NULL)
+  {
+    // then this is the first node in the list!
+    LinkedNodeClass<T> *newNode = new LinkedNodeClass<T> (NULL, valToInsert, NULL);
+    head = newNode;
+    tail = newNode;
+    found = true;
+    std::cout << "inserted FIRST value into list = " << head->getValue() << " also " << tail->getValue() << std::endl;
+  }
+  else
+  {
+    LinkedNodeClass<T> *temp = head;
 
-  //while (!found)
-  //{
-    // empty list case
-    if (head == NULL || tail == NULL)
+    // check head
+    if (valToInsert < head->getValue())
     {
-      // then this is the first node in the list!
-      LinkedNodeClass<T> *newNode = new LinkedNodeClass<T> (NULL, valToInsert, NULL);
+      temp = head;
+      LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(NULL, valToInsert, temp);
       head = newNode;
-      tail = newNode;
+      newNode->setBeforeAndAfterPointers();
       found = true;
-      std::cout << "inserted FIRST value into list = " << head->getValue() << " also " << tail->getValue() << std::endl;
+      std::cout << "inserted " << valToInsert << " at the HEAD" << std::endl;
     }
-    else
+    // check tail
+    else if (valToInsert >= tail->getValue())
     {
-        LinkedNodeClass<T> *temp = head;
+      temp = tail;
+      LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(temp, valToInsert, NULL);
+      tail = newNode;
+      newNode->setBeforeAndAfterPointers();
+      found = true;
+      std::cout << "inserted " << valToInsert << " at the TAIL" << std::endl;
+    }
 
-      // single-node case
-      /*
-      if (head == tail) {
-        std::cout << temp->getValue() << " and " << valToInsert << std::endl;
-        if (valToInsert < temp->getValue()) {
-          std::cout << "new value is smaller than the ONE existing node's value" << std::endl;
-          LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(NULL, valToInsert, temp);
-          head = newNode;
-          newNode->setBeforeAndAfterPointers();
-        } else {
-          std::cout << "new value is >= than the ONE existing node's value" << std::endl;
-          LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(temp, valToInsert, NULL);
-          tail = newNode;
-          newNode->setBeforeAndAfterPointers();
-        }
+    // otherwise, step through list
+    temp = head;
+    while (!found)
+    {
+      std::cout << "current temp value   = " << temp->getValue() << std::endl;
+      std::cout << "value to be inserted = " << valToInsert << std::endl;
+      std::cout << "next value  in list  = " << (temp->getNext())->getValue() << std::endl;
+      if (temp->getValue() <= valToInsert && valToInsert < (temp->getNext())->getValue() )
+      {
+        std::cout << "inserted " << valToInsert << " between " << temp->getValue() << " and " << (temp->getNext())->getValue() << std::endl;
+        LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(temp, valToInsert, temp->getNext());
+        newNode->setBeforeAndAfterPointers();
         found = true;
       }
-      else  // multi-node case
+      else
       {
-      */
-        // check head
-        //if (valToInsert < temp->getValue() && temp == head)
-        if (valToInsert < head->getValue())
-        {
-          temp = head;
-          LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(NULL, valToInsert, temp);
-          head = newNode;
-          newNode->setBeforeAndAfterPointers();
-          found = true;
-          std::cout << "inserted " << valToInsert << " at the HEAD" << std::endl;
-        }
-        // check tail
-        //else if (valToInsert >= temp->getValue() && temp == tail)
-        else if (valToInsert >= tail->getValue())
-        {
-          temp = tail;
-          LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(temp, valToInsert, NULL);
-          tail = newNode;
-          newNode->setBeforeAndAfterPointers();
-          found = true;
-          std::cout << "inserted " << valToInsert << " at the TAIL" << std::endl;
-        }
-      //}
-
-      // otherwise, step through list
-        temp = head;
-        while (!found)
-        {
-
-          std::cout << "current temp value   = " << temp->getValue() << std::endl;
-          std::cout << "value to be inserted = " << valToInsert << std::endl;
-          std::cout << "next value  in list  = " << (temp->getNext())->getValue() << std::endl;
-
-          if (temp == tail)
-          {
-            /*
-            // reached end of list so value must be before or after the tail
-            if (temp->getValue() <= valToInsert)
-            {
-              // new value goes before tail
-
-            }
-            else
-            {
-              // new value is the tail
-            }
-            */
-            std::cout << "we are at the tail" << std::endl;
-          }
-          else if (temp->getValue() <= valToInsert && valToInsert < (temp->getNext())->getValue() )
-          {
-            std::cout << "inserted " << valToInsert << " between " << temp->getValue() << " and " << (temp->getNext())->getValue() << std::endl;
-            LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(temp, valToInsert, temp->getNext());
-            newNode->setBeforeAndAfterPointers();
-            found = true;
-          }
-          else
-          {
-            temp = temp->getNext();
-            std::cout << "*moving temp to getNext()*" << std::endl;
-          }
-
-
-          /*
-          check++;
-          if (check > 5)
-          {
-            std::cout << "**stopped while loop for testing**" << std::endl;
-            found = true;
-          }
-          */
-
-        }
-
+        temp = temp->getNext();
+        std::cout << "*moving temp to getNext()*" << std::endl;
+      }
     }
-  //}
-  //delete(temp);
+  }
 }
 
 //Prints the contents of the list from head to tail to the screen.
 template< class T >
 void SortedListClass<T>::printForward() const
 {
-  std::cout << "*WARNING: printForward() is incomplete!" << std::endl;
+  bool printDone = false;
+  LinkedNodeClass<T> *temp = head;
+
+  if (temp == 0)
+  {
+    std::cout << "list is empty, nothing to print!" << std::endl;
+    printDone = true;
+  }
+  else
+  {
+    std::cout << "Forward List Contents Follow:" << std::endl;
+  }
+
+  while (!printDone)
+  {
+    std::cout << "  " << temp->getValue() << std::endl;
+    if (temp->getNext() != 0)
+    {
+      temp = temp->getNext();
+    }
+    else
+    {
+      std::cout << "End Of List Contents" << std::endl;
+      printDone = true;
+    }
+  }
 }
+
+//Prints the contents of the list from tail to head to the screen.
+//Begins with a line reading "Backward List Contents Follow:", then
+//prints one list element per line, indented two spaces, then prints
+//the line "End Of List Contents" to indicate the end of the list.
+template< class T >
+void SortedListClass<T>::printBackward() const
+{
+  bool printDone = false;
+  LinkedNodeClass<T> *temp = tail;
+
+  if (temp == 0)
+  {
+    std::cout << "list is empty, nothing to print!" << std::endl;
+    printDone = true;
+  }
+  else
+  {
+    std::cout << "Backward List Contents Follow:" << std::endl;
+  }
+
+  while (!printDone)
+  {
+    std::cout << "  " << temp->getValue() << std::endl;
+    if (temp->getPrev() != 0)
+    {
+      temp = temp->getPrev();
+    }
+    else
+    {
+      std::cout << "End Of List Contents" << std::endl;
+      printDone = true;
+    }
+  }
+}
+
 
 // std::cout << " " << std::endl;
