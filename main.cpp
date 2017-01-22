@@ -13,6 +13,7 @@
 #include <iostream>
 #include "LinkedNodeClass.h"
 #include "SortedListClass.h"
+#include "FIFOQueueClass.h"
 
 int main()
 {
@@ -115,6 +116,32 @@ int main()
   delete(A);
   delete(B);
   delete(C);
+
+
+  // testing of FIFOQueueClass
+  std::cout << "\n\n";
+  FIFOQueueClass<int> myQ;
+  myQ.enqueue(10);
+  myQ.enqueue(20);
+  myQ.enqueue(30);
+  myQ.print();
+
+  int deq;
+  myQ.dequeue(deq);
+  std::cout << "\nremoved value: " << deq << "\n";
+  myQ.print();
+
+  myQ.dequeue(deq);
+  std::cout << "removed value: " << deq << "\n";
+  myQ.print();
+
+  myQ.dequeue(deq);
+  std::cout << "removed value: " << deq << "\n";
+  myQ.print();
+
+  myQ.dequeue(deq);
+  std::cout << "removed value: " << deq << "\n";
+  myQ.print();
 
   return 0;
 }
