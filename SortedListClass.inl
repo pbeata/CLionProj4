@@ -5,7 +5,7 @@
 template< class T >
 SortedListClass<T>::SortedListClass()
 {
-  std::cout << "default list ctor was called!" << std::endl;
+  //std::cout << "default list ctor was called!" << std::endl;
   head = NULL;
   tail = NULL;
 }
@@ -15,7 +15,7 @@ SortedListClass<T>::SortedListClass()
 template< class T >
 SortedListClass<T>::SortedListClass(const SortedListClass< T > &rhs)
 {
-  std::cout << "copy ctor was called!" << std::endl;
+  //std::cout << "copy ctor was called!" << std::endl;
   SortedListClass();
 
   bool copyDone = false;
@@ -23,13 +23,13 @@ SortedListClass<T>::SortedListClass(const SortedListClass< T > &rhs)
 
   if (temp == 0)
   {
-    std::cout << "copying an empty list!" << std::endl;
+    //std::cout << "copying an empty list!" << std::endl;
     copyDone = true;
   }
   else
   {
     // create first node and set head to pt to it
-    std::cout << "copying: " << temp->getValue() << std::endl;
+    //std::cout << "copying: " << temp->getValue() << std::endl;
     LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(NULL, temp->getValue(), NULL);
     head = newNode;
 
@@ -40,21 +40,21 @@ SortedListClass<T>::SortedListClass(const SortedListClass< T > &rhs)
       if (temp->getNext() != 0)
       {
         temp = temp->getNext();
-        std::cout << "copying: " << temp->getValue() << std::endl;
+        //std::cout << "copying: " << temp->getValue() << std::endl;
         LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(prev, temp->getValue(), NULL);
         newNode->setBeforeAndAfterPointers();
         prev = newNode;
       }
       else
       {
-        std::cout << "reached the tail during copying" << std::endl;
+        //std::cout << "reached the tail during copying" << std::endl;
         tail = prev;
         copyDone = true;
       }
     }
 
-    std::cout << "\n COPIED HEAD: " << head->getValue() << std::endl;
-    std::cout << " COPIED TAIL: " << tail->getValue() << "\n" << std::endl;
+    //std::cout << "\n COPIED HEAD: " << head->getValue() << std::endl;
+    //std::cout << " COPIED TAIL: " << tail->getValue() << "\n" << std::endl;
 
   }
 }
@@ -80,13 +80,13 @@ void SortedListClass<T>::clear()
       temp->setPreviousPointerToNull();
       temp->setNextPointerToNull();
       head->setPreviousPointerToNull();
-      std::cout << "deleting this value from list: " << temp->getValue() << std::endl;
+      //std::cout << "deleting this value from list: " << temp->getValue() << std::endl;
       delete (temp);
       temp = head;
     }
     else
     {
-      std::cout << "deleting LAST value from list: " << temp->getValue() << std::endl;
+      //std::cout << "deleting LAST value from list: " << temp->getValue() << std::endl;
       delete (temp);
       emptyList = true;
     }
@@ -110,7 +110,7 @@ void SortedListClass<T>::insertValue(const T &valToInsert)
     head = newNode;
     tail = newNode;
     found = true;
-    std::cout << "inserted FIRST value into list = " << head->getValue() << " also " << tail->getValue() << std::endl;
+    //std::cout << "inserted FIRST value into list = " << head->getValue() << " also " << tail->getValue() << std::endl;
   }
   else
   {
@@ -124,7 +124,7 @@ void SortedListClass<T>::insertValue(const T &valToInsert)
       head = newNode;
       newNode->setBeforeAndAfterPointers();
       found = true;
-      std::cout << "inserted " << valToInsert << " at the HEAD" << std::endl;
+      //std::cout << "inserted " << valToInsert << " at the HEAD" << std::endl;
     }
     // check tail
     else if (valToInsert >= tail->getValue())
@@ -134,19 +134,19 @@ void SortedListClass<T>::insertValue(const T &valToInsert)
       tail = newNode;
       newNode->setBeforeAndAfterPointers();
       found = true;
-      std::cout << "inserted " << valToInsert << " at the TAIL" << std::endl;
+      //std::cout << "inserted " << valToInsert << " at the TAIL" << std::endl;
     }
 
     // otherwise, step through list
     temp = head;
     while (!found)
     {
-      std::cout << "current temp value   = " << temp->getValue() << std::endl;
-      std::cout << "value to be inserted = " << valToInsert << std::endl;
-      std::cout << "next value  in list  = " << (temp->getNext())->getValue() << std::endl;
+      //std::cout << "current temp value   = " << temp->getValue() << std::endl;
+      //std::cout << "value to be inserted = " << valToInsert << std::endl;
+      //std::cout << "next value  in list  = " << (temp->getNext())->getValue() << std::endl;
       if (temp->getValue() <= valToInsert && valToInsert < (temp->getNext())->getValue() )
       {
-        std::cout << "inserted " << valToInsert << " between " << temp->getValue() << " and " << (temp->getNext())->getValue() << std::endl;
+        //std::cout << "inserted " << valToInsert << " between " << temp->getValue() << " and " << (temp->getNext())->getValue() << std::endl;
         LinkedNodeClass<T> *newNode = new LinkedNodeClass<T>(temp, valToInsert, temp->getNext());
         newNode->setBeforeAndAfterPointers();
         found = true;
@@ -154,7 +154,7 @@ void SortedListClass<T>::insertValue(const T &valToInsert)
       else
       {
         temp = temp->getNext();
-        std::cout << "*moving temp to getNext()*" << std::endl;
+        //std::cout << "*moving temp to getNext()*" << std::endl;
       }
     }
   }

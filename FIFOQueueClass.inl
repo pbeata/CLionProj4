@@ -5,7 +5,7 @@
 template< class T >
 FIFOQueueClass<T>::FIFOQueueClass()
 {
-  std::cout << "default FIFO ctor was called!" << std::endl;
+  //std::cout << "default FIFO ctor was called!" << std::endl;
   head = NULL;
   tail = NULL;
 }
@@ -43,7 +43,7 @@ bool FIFOQueueClass<T>::dequeue(T &outItem)
   if (temp == 0)
   {
     // list is empty!
-    std::cout << "*warning: attempted to dequeue from empty list!\n";
+    std::cout << "*warning: attempted to dequeue from empty queue\n";
     return false;
   }
   else
@@ -61,7 +61,7 @@ bool FIFOQueueClass<T>::dequeue(T &outItem)
     {
       head = NULL;
       tail = NULL;
-      std::cout << "deleting last queue item ... \n";
+      std::cout << "*warning: deleting last queue item\n";
     }
 
     delete(temp);
