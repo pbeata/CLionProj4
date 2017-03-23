@@ -1,5 +1,9 @@
-#ifndef _RANDOM_H_
-#define _RANDOM_H_
+//
+// Created by PaulA on 3/22/2017.
+//
+
+#ifndef CLIONPROJ4_RANDOM_H
+#define CLIONPROJ4_RANDOM_H
 
 #include <cstdlib>
 using namespace std;
@@ -11,24 +15,22 @@ using namespace std;
 //This is called once at the beginning of program execution
 //to set the seed of the pseudo-random number generator.
 void setSeed(
-    const int seedVal
-    );
+        const int seedVal
+);
 
-//Returns an integer value from a uniform distribution 
+//Returns an integer value from a uniform distribution
 //between the specified min and max values.
 int getUniform(
-     const int min,
-     const int max
-     );
+        const int min,
+        const int max
+);
 
 //Returns an integer drawn from a normal distribution
 //described by the input mean and standard deviation
 //values...
 int getNormal(
-     const double mean,
-     const double stdDev
-     );
+        const double mean,
+        const double stdDev
+);
 
-#endif // _RANDOM_H_
-
-
+#endif //CLIONPROJ4_RANDOM_H

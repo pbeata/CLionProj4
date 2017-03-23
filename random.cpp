@@ -1,17 +1,22 @@
+//
+// Created by PaulA on 3/22/2017.
+//
+
+#include "random.h"
 #include <cstdlib>
 using namespace std;
 
 void setSeed(
-    const int seedVal
-    )
+        const int seedVal
+)
 {
   srand(seedVal);
 }
 
 int getUniform(
-     const int min,
-     const int max
-     )
+        const int min,
+        const int max
+)
 {
   int uniRand;
   uniRand = rand() % ((max + 1) - min) + min;
@@ -19,9 +24,9 @@ int getUniform(
 }
 
 int getNormal(
-     const double mean,
-     const double stdDev
-     )
+        const double mean,
+        const double stdDev
+)
 {
   const int NUM_UNIFORM = 12;
   const int MAX = 1000;

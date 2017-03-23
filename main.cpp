@@ -5,17 +5,21 @@
 
 	December 2016
 	January 2017
+  March 2017
 
   12-12-16: created GitHub repo to host project 4
   01-14-17: moving project into Code::Blocks IDE
   01-22-17: finished Phases 1-2 in CLion IDE
     --> transitioning into event-driven simulation for the main loop
+
+  03-22-17: restarting the project on my free time at night!
 */
 
 #include <iostream>
 #include "LinkedNodeClass.h"
 #include "SortedListClass.h"
 #include "FIFOQueueClass.h"
+#include "random.h"
 
 int main()
 {
@@ -61,6 +65,21 @@ int main()
   {
     std::cout << "\nstarting tests of simulation components only...\n\n";
 
+    // start by simulating car arrivals
+    int time = 0;
+    int closingTime = 1000;
+
+    int minArrTime = 18;
+    int maxArrTime = 24;
+    int arrival = 0;
+
+    while (time < closingTime)
+    {
+      // generate a random arrival time from uniform distribution
+      arrival = getUniform(minArrTime, maxArrTime);
+      time += arrival;
+      std::cout << "new train car arrival at: " << time << std::endl;
+    }
 
   }
 
