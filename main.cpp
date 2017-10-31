@@ -45,6 +45,9 @@ int main()
   bool testSimParts = true;
   bool runFullSim = false;
 
+  // set the seed value for testing
+  setSeed(100);
+
 
   /*  RUNNING THE FULL SIMULATION
    *
