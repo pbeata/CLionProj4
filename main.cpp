@@ -6,6 +6,7 @@
 	December 2016
 	January 2017
   March 2017
+  November 2017  (completed this month)
 
   12-12-16: created GitHub repo to host project 4
   01-14-17: moving project into Code::Blocks IDE
@@ -13,15 +14,22 @@
     --> transitioning into event-driven simulation for the main loop
 
   03-22-17: restarting the project on my free time at night!
+  10-31-17: restarted project as a post-doc now at NCSU
 */
 
+
 #include <iostream>
+#include <fstream>
+#include <stdio.h>
+
+
 #include "LinkedNodeClass.h"
 #include "SortedListClass.h"
 #include "FIFOQueueClass.h"
 #include "random.h"
 
-int main()
+
+int main(int argc, char *argv[])
 {
   /*
    * todo: 01-22-17 Consider using the "switch" command to coordinate the main program development
@@ -42,22 +50,71 @@ int main()
 
   // conditions for running the main program
   bool testDataStructs = false;
-  bool testSimParts = true;
-  bool runFullSim = false;
+  bool testSimParts = false;
+  bool runFullSim = true;
 
   // set the seed value for testing
-  setSeed(100);
+  int mySeedVal = 100;
+  setSeed(mySeedVal);
+
+  // input variables
+  int closing;
+  double riderArrivMean, riderArrivStd;
+  int carArrivMin, carArrivMax;
+  int percSFP, percFP;
+  int idealSFP, idealFP;
+
+  // other variables in the system
+  int time;
+  int percSTD;
+
+  // file management
+  ifstream inFile;
+  std::string inFileName;
 
 
-  /*  RUNNING THE FULL SIMULATION
-   *
- */
+
+  //  RUNNING THE FULL SIMULATION
   if (runFullSim)
   {
     std::cout << "\nstarting the full simulation ...\n\n";
 
+    // get input file from command line argument
+    if (argc != 2)
+    {
+      printf("***Error: only supply one command line argument\n");
+      printf("   Expected Usage:  $ ./parkSimulation simParams.txt \n");
+      exit(1);
+    }
+    else
+    {
+      inFileName = argv[1];
+      std::cout << inFileName << "\n";
+    }
 
+    // read input parameters from the file
+    inFile.open(inFileName.c_str());
+    inFile >> closing;
+    inFile >> riderArrivMean;
+    inFile >> riderArrivStd;
+    inFile >> carArrivMin;
+    inFile >> carArrivMax;
+    inFile >> percSFP;
+    inFile >> percFP;
+    inFile >> idealSFP;
+    inFile >> idealFP;
+    printf("%d\n", closing);
+    printf("%f\n", riderArrivMean);
+    printf("%f\n", riderArrivStd);
+    printf("%d\n", carArrivMin);
+    printf("%d\n", carArrivMax);
+    printf("%d\n", percSFP);
+    printf("%d\n", percFP);
+    printf("%d\n", idealSFP);
+    printf("%d\n", idealFP);
+    inFile.close();
   }
+
 
 
   /*  TESTING PARTS OF THE SIMULATION
@@ -69,17 +126,17 @@ int main()
     std::cout << "\nstarting tests of simulation components only...\n\n";
 
     // start by simulating car arrivals
-    int time = 0;
-    int closingTime = 1000;
+    time = 0;
+    closing = 1000;
 
-    int minArrTime = 18;
-    int maxArrTime = 24;
+    carArrivMin = 18;
+    carArrivMax = 24;
     int arrival = 0;
 
-    while (time < closingTime)
+    while (time < closing)
     {
       // generate a random arrival time from uniform distribution
-      arrival = getUniform(minArrTime, maxArrTime);
+      arrival = getUniform(carArrivMin, carArrivMax);
       time += arrival;
       std::cout << "new train car arrival at: " << time << std::endl;
     }
