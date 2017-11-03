@@ -27,6 +27,7 @@
 #include "SortedListClass.h"
 #include "FIFOQueueClass.h"
 #include "random.h"
+#include "ParkAttractionClass.h"
 
 
 int main(int argc, char *argv[])
@@ -50,7 +51,6 @@ int main(int argc, char *argv[])
 
   // conditions for running the main program
   bool testDataStructs = false;
-  bool testSimParts = false;
   bool runFullSim = true;
 
   // set the seed value for testing
@@ -66,11 +66,27 @@ int main(int argc, char *argv[])
 
   // other variables in the system
   int time;
-  int percSTD;
+  int riderArrival;
+  int carArrival;
+  int minRange = 0, maxRange = 100, randVal;
 
   // file management
   ifstream inFile;
   std::string inFileName;
+
+  // queues for riders
+  //    for this project, assume 3 queues for rider priority:
+  //    SFP = Queue #0, FP = #1, and STD = #2
+  const int NUM_RIDER_QUEUES = 3;
+  FIFOQueueClass<int> riderQueues[NUM_RIDER_QUEUES];
+
+  // initialize the first ride
+  std::string rideName;
+  rideName = "Space Mountain";
+  int rideSeats = 20;
+  ParkAttractionClass ride(rideName, rideSeats);
+  ride.printName();
+  printf("Number of Seats: %d\n", ride.getNumSeats());
 
 
 
@@ -79,7 +95,7 @@ int main(int argc, char *argv[])
   {
     std::cout << "\nstarting the full simulation ...\n\n";
 
-    // get input file from command line argument
+    // get input file name from command line argument
     if (argc != 2)
     {
       printf("***Error: only supply one command line argument\n");
@@ -113,32 +129,46 @@ int main(int argc, char *argv[])
     printf("%d\n", idealSFP);
     printf("%d\n", idealFP);
     inFile.close();
-  }
+    printf("\n");
 
-
-
-  /*  TESTING PARTS OF THE SIMULATION
-   *    -- this is the start of my work for Phase 3
-   *    -- here we can test individual features of simulation
-   */
-  if (testSimParts)
-  {
-    std::cout << "\nstarting tests of simulation components only...\n\n";
-
-    // start by simulating car arrivals
+    // main event loop
     time = 0;
-    closing = 1000;
-
-    carArrivMin = 18;
-    carArrivMax = 24;
-    int arrival = 0;
-
+    //closing = 100;
     while (time < closing)
     {
-      // generate a random arrival time from uniform distribution
-      arrival = getUniform(carArrivMin, carArrivMax);
-      time += arrival;
-      std::cout << "new train car arrival at: " << time << std::endl;
+      
+      riderArrival = getNormal(riderArrivMean, riderArrivStd);
+      time += riderArrival;
+
+      printf("\nCurrent time = %d \n", time);
+
+      randVal = getUniform(minRange, maxRange);
+      if (randVal < percSFP)
+      {
+        //printf("this rider is SFP: %d \n", randVal);
+        riderQueues[0].enqueue(time);
+      }
+      else if (percSFP <= randVal && randVal < (percSFP + percFP))
+      {
+        //printf("this rider is FP:  %d \n", randVal);
+        riderQueues[1].enqueue(time);
+      }
+      else
+      {
+        //printf("this rider is STD: %d \n", randVal);
+        riderQueues[2].enqueue(time);
+      }
+
+      printf("SFP = ");
+      riderQueues[0].print();
+      printf(" FP = ");
+      riderQueues[1].print();
+      printf("STD = ");
+      riderQueues[2].print();
+      
+      carArrival = getUniform(carArrivMin, carArrivMax);
+      
+      //printf("C%d and R%d\n", carArrival, riderArrival);
     }
 
   }
