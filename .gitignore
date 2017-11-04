@@ -1,3 +1,7 @@
 parkSimulation
 *.o
 *~
+.cproject
+.project
+.settings/
+Default/

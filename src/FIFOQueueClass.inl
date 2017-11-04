@@ -75,7 +75,6 @@ bool FIFOQueueClass<T>::dequeue(T &outItem)
 template< class T >
 void FIFOQueueClass<T>::print() const
 {
-  bool donePrint = false;
   LinkedNodeClass<T> *temp = head;
 
   while (temp != 0)

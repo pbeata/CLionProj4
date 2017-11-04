@@ -28,6 +28,7 @@
 #include "FIFOQueueClass.h"
 #include "random.h"
 #include "ParkAttractionClass.h"
+#include "EventClass.h"
 
 
 int main(int argc, char *argv[])
@@ -67,12 +68,15 @@ int main(int argc, char *argv[])
   // other variables in the system
   int time;
   int riderArrival;
-  int carArrival;
+  //int carArrival;
   int minRange = 0, maxRange = 100, randVal;
 
   // file management
   ifstream inFile;
   std::string inFileName;
+
+  // event queue
+
 
   // queues for riders
   //    for this project, assume 3 queues for rider priority:
@@ -84,16 +88,16 @@ int main(int argc, char *argv[])
   std::string rideName;
   rideName = "Space Mountain";
   int rideSeats = 20;
-  ParkAttractionClass ride(rideName, rideSeats);
-  ride.printName();
-  printf("Number of Seats: %d\n", ride.getNumSeats());
+  ParkAttractionClass parkRide(rideName, rideSeats);
+  parkRide.printName();
+  printf("Number of Seats: %d\n", parkRide.getNumSeats());
 
 
 
   //  RUNNING THE FULL SIMULATION
   if (runFullSim)
   {
-    std::cout << "\nstarting the full simulation ...\n\n";
+    std::cout << "\n starting the full simulation ...\n\n";
 
     // get input file name from command line argument
     if (argc != 2)
@@ -105,7 +109,7 @@ int main(int argc, char *argv[])
     else
     {
       inFileName = argv[1];
-      std::cout << inFileName << "\n";
+      std::cout << "Got input file name: " << inFileName << "\n";
     }
 
     // read input parameters from the file
@@ -119,6 +123,7 @@ int main(int argc, char *argv[])
     inFile >> percFP;
     inFile >> idealSFP;
     inFile >> idealFP;
+    /*
     printf("%d\n", closing);
     printf("%f\n", riderArrivMean);
     printf("%f\n", riderArrivStd);
@@ -128,18 +133,22 @@ int main(int argc, char *argv[])
     printf("%d\n", percFP);
     printf("%d\n", idealSFP);
     printf("%d\n", idealFP);
+    */
     inFile.close();
     printf("\n");
 
+
+
+
     // main event loop
     time = 0;
-    //closing = 100;
+    closing = 100;
     while (time < closing)
     {
       
       riderArrival = getNormal(riderArrivMean, riderArrivStd);
+      
       time += riderArrival;
-
       printf("\nCurrent time = %d \n", time);
 
       randVal = getUniform(minRange, maxRange);
@@ -159,14 +168,16 @@ int main(int argc, char *argv[])
         riderQueues[2].enqueue(time);
       }
 
+      /*
       printf("SFP = ");
       riderQueues[0].print();
       printf(" FP = ");
       riderQueues[1].print();
       printf("STD = ");
       riderQueues[2].print();
+      */
       
-      carArrival = getUniform(carArrivMin, carArrivMax);
+      //carArrival = getUniform(carArrivMin, carArrivMax);
       
       //printf("C%d and R%d\n", carArrival, riderArrival);
     }
