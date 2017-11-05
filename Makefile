@@ -1,14 +1,11 @@
-parkSimulation: random.o ParkAttractionClass.o EventClass.o main.o
-	g++ -g -Wall random.o ParkAttractionClass.o EventClass.o  main.o -o parkSimulation
+parkSimulation: random.o ParkRideClass.o main.o 
+	g++ -g -Wall random.o ParkRideClass.o main.o -o parkSimulation
 
 main.o: main.cpp
 	g++ -c main.cpp -o main.o
 
-EventClass.o: EventClass.cpp EventClass.h
-	g++ -c EventClass.cpp -o EventClass.o
-
-ParkAttractionClass.o: ParkAttractionClass.cpp ParkAttractionClass.h
-	g++ -c ParkAttractionClass.cpp -o ParkAttractionClass.o
+ParkRideClass.o: ParkRideClass.cpp ParkRideClass.h
+	g++ -c ParkRideClass.cpp -o ParkRideClass.o
 
 random.o: random.cpp random.h
 	g++ -c random.cpp -o random.o

@@ -26,9 +26,8 @@
 #include "LinkedNodeClass.h"
 #include "SortedListClass.h"
 #include "FIFOQueueClass.h"
+#include "ParkRideClass.h"
 #include "random.h"
-#include "ParkAttractionClass.h"
-#include "EventClass.h"
 
 
 int main(int argc, char *argv[])
@@ -52,7 +51,6 @@ int main(int argc, char *argv[])
 
   // conditions for running the main program
   bool testDataStructs = false;
-  bool runFullSim = true;
 
   // set the seed value for testing
   int mySeedVal = 100;
@@ -66,123 +64,109 @@ int main(int argc, char *argv[])
   int idealSFP, idealFP;
 
   // other variables in the system
-  int time;
+  int clock = 0;
   int riderArrival;
-  //int carArrival;
+  int carArrival;
   int minRange = 0, maxRange = 100, randVal;
 
   // file management
   ifstream inFile;
   std::string inFileName;
 
-  // event queue
+  // get input file name from command line argument
+  if (argc != 2)
+  {
+    printf("***Error: only supply one command line argument\n");
+    printf("   Expected Usage:  $ ./parkSimulation simParams.txt \n");
+    exit(1);
+  }
+  else
+  {
+    inFileName = argv[1];
+    std::cout << "Got input file name: " << inFileName << "\n";
+  }
 
+  // read input parameters from the file
+  inFile.open(inFileName.c_str());
+  inFile >> closing;
+  inFile >> riderArrivMean;
+  inFile >> riderArrivStd;
+  inFile >> carArrivMin;
+  inFile >> carArrivMax;
+  inFile >> percSFP;
+  inFile >> percFP;
+  inFile >> idealSFP;
+  inFile >> idealFP;
+  inFile.close();
 
-  // queues for riders
+  // FIFO queues for riders
   //    for this project, assume 3 queues for rider priority:
   //    SFP = Queue #0, FP = #1, and STD = #2
   const int NUM_RIDER_QUEUES = 3;
   FIFOQueueClass<int> riderQueues[NUM_RIDER_QUEUES];
 
-  // initialize the first ride
-  std::string rideName;
-  rideName = "Space Mountain";
-  int rideSeats = 20;
-  ParkAttractionClass parkRide(rideName, rideSeats);
-  parkRide.printName();
-  printf("Number of Seats: %d\n", parkRide.getNumSeats());
+  // initialize ride event queue
+  SortedListClass<int> eventQueue;
+  riderArrival = getNormal(riderArrivMean, riderArrivStd);
+  eventQueue.insertValue(riderArrival);
+  carArrival = getUniform(carArrivMin, carArrivMax);
+  eventQueue.insertValue(carArrival);
+
+  // initialize first ride of the park
+  ParkRideClass myRide("Space_Mountain", 10);
 
 
 
-  //  RUNNING THE FULL SIMULATION
-  if (runFullSim)
+    
+  // main event loop (todo: change to while event queue not empty)
+  closing = 200;
+  while (clock < closing)
   {
-    std::cout << "\n starting the full simulation ...\n\n";
 
-    // get input file name from command line argument
-    if (argc != 2)
+    eventQueue.removeFront(clock);
+    printf("\nCURRENT TIME = %d \n", clock);
+
+    // check the event type
+    if (clock == carArrival)
     {
-      printf("***Error: only supply one command line argument\n");
-      printf("   Expected Usage:  $ ./parkSimulation simParams.txt \n");
-      exit(1);
+      // handle car arrival event
+      printf(" ===>> new car arrives at %d \n", clock);
+      carArrival = clock + getUniform(carArrivMin, carArrivMax);
+      eventQueue.insertValue(carArrival);
+
+      // load up the car by priority level
+      myRide.unloadRiders();
+      
+
     }
     else
     {
-      inFileName = argv[1];
-      std::cout << "Got input file name: " << inFileName << "\n";
-    }
-
-    // read input parameters from the file
-    inFile.open(inFileName.c_str());
-    inFile >> closing;
-    inFile >> riderArrivMean;
-    inFile >> riderArrivStd;
-    inFile >> carArrivMin;
-    inFile >> carArrivMax;
-    inFile >> percSFP;
-    inFile >> percFP;
-    inFile >> idealSFP;
-    inFile >> idealFP;
-    /*
-    printf("%d\n", closing);
-    printf("%f\n", riderArrivMean);
-    printf("%f\n", riderArrivStd);
-    printf("%d\n", carArrivMin);
-    printf("%d\n", carArrivMax);
-    printf("%d\n", percSFP);
-    printf("%d\n", percFP);
-    printf("%d\n", idealSFP);
-    printf("%d\n", idealFP);
-    */
-    inFile.close();
-    printf("\n");
-
-
-
-
-    // main event loop
-    time = 0;
-    closing = 100;
-    while (time < closing)
-    {
-      
-      riderArrival = getNormal(riderArrivMean, riderArrivStd);
-      
-      time += riderArrival;
-      printf("\nCurrent time = %d \n", time);
-
+      // handle rider arrival event
       randVal = getUniform(minRange, maxRange);
       if (randVal < percSFP)
       {
-        //printf("this rider is SFP: %d \n", randVal);
-        riderQueues[0].enqueue(time);
+        // SFP Queue
+        riderQueues[0].enqueue(clock);
       }
       else if (percSFP <= randVal && randVal < (percSFP + percFP))
       {
-        //printf("this rider is FP:  %d \n", randVal);
-        riderQueues[1].enqueue(time);
+        // FP Queue
+        riderQueues[1].enqueue(clock);
       }
       else
       {
-        //printf("this rider is STD: %d \n", randVal);
-        riderQueues[2].enqueue(time);
+        // STD Queue
+        riderQueues[2].enqueue(clock);
       }
-
-      /*
-      printf("SFP = ");
-      riderQueues[0].print();
-      printf(" FP = ");
-      riderQueues[1].print();
-      printf("STD = ");
-      riderQueues[2].print();
-      */
-      
-      //carArrival = getUniform(carArrivMin, carArrivMax);
-      
-      //printf("C%d and R%d\n", carArrival, riderArrival);
+      //printf("(added rider to proper queue)\n");
+      riderArrival = clock + getNormal(riderArrivMean, riderArrivStd);
+      eventQueue.insertValue(riderArrival);
     }
-
   }
+
+
+
+
 
 
   /*  TESTING CUSTOM DATA STRUCTURES ONLY

@@ -1,24 +1,27 @@
-#ifndef PARKATTRACTIONCLASS_H_INCLUDED
-#define PARKATTRACTIONCLASS_H_INCLUDED
+#ifndef PARKRIDECLASS_H_INCLUDED
+#define PARKRIDECLASS_H_INCLUDED
 
 #include <iostream>
 #include <string>
 
-class ParkAttractionClass
+class ParkRideClass
 {
 
   public:
-    ParkAttractionClass(
+    ParkRideClass(
         std::string inName,
         int inSeats
     );
     void printName();
     int getNumSeats();
+    bool addRider();
+    void unloadRiders();
 
   private: 
     std::string attractionName;
     int numSeats;
+    int filledSeats;
 
 };
 
-#endif  // PARKATTRACTIONCLASS_H_INCLUDED
+#endif  // PARKRIDECLASS_H_INCLUDED
