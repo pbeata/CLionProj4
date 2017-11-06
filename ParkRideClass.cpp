@@ -30,6 +30,7 @@ bool ParkRideClass::addRider()
   if (filledSeats < numSeats)
   {
     filledSeats += 1;
+    printf("--------Ride now has %d riders \n", filledSeats);
     return true;
   }
   else
@@ -43,4 +44,18 @@ bool ParkRideClass::addRider()
 void ParkRideClass::unloadRiders()
 {
   filledSeats = 0;
+}
+
+// remove one rider
+bool ParkRideClass::delRider()
+{
+  if (filledSeats > 0)
+  {
+    filledSeats -= 1;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
 }

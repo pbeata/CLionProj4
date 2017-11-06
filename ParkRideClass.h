@@ -15,6 +15,7 @@ class ParkRideClass
     void printName();
     int getNumSeats();
     bool addRider();
+    bool delRider();
     void unloadRiders();
 
   private: 

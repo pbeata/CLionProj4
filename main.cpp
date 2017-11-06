@@ -60,15 +60,27 @@ int main(int argc, char *argv[])
   int closing;
   double riderArrivMean, riderArrivStd;
   int carArrivMin, carArrivMax;
-  int percSFP, percFP;
-  int idealSFP, idealFP;
 
   // other variables in the system
-  int clock = 0;
-  int riderArrival;
-  int carArrival;
-  int minRange = 0, maxRange = 100, randVal;
+  int i, j;
+  int temp, randVal, clock = 0;
+  int riderArrival, carArrival;
+  bool checkQueue = true;
 
+  // ride-specific input
+  int rideSeats = 10;
+  std::string rideName = "Space_Mountain";
+
+  // FIFO queues for riders
+  //    for this project, assume 3 queues for rider priority:
+  //    SFP = Queue #0, FP = #1, and STD = #2
+  const int NUM_RIDER_QUEUES = 3;
+  FIFOQueueClass<int> riderQueues[NUM_RIDER_QUEUES];
+  int percentPriority[NUM_RIDER_QUEUES];
+  int idealRiders[NUM_RIDER_QUEUES];
+  int minPercent = 0, totalPercent = 100;
+
+  // ====================================================================
   // file management
   ifstream inFile;
   std::string inFileName;
@@ -93,17 +105,35 @@ int main(int argc, char *argv[])
   inFile >> riderArrivStd;
   inFile >> carArrivMin;
   inFile >> carArrivMax;
-  inFile >> percSFP;
-  inFile >> percFP;
-  inFile >> idealSFP;
-  inFile >> idealFP;
+  inFile >> percentPriority[0];
+  inFile >> percentPriority[1];
+  inFile >> idealRiders[0];
+  inFile >> idealRiders[1];
   inFile.close();
 
-  // FIFO queues for riders
-  //    for this project, assume 3 queues for rider priority:
-  //    SFP = Queue #0, FP = #1, and STD = #2
-  const int NUM_RIDER_QUEUES = 3;
-  FIFOQueueClass<int> riderQueues[NUM_RIDER_QUEUES];
+  // derived parameters from input
+  percentPriority[NUM_RIDER_QUEUES-1] = totalPercent;
+  idealRiders[NUM_RIDER_QUEUES-1] = rideSeats;
+  for (i = 0; i < NUM_RIDER_QUEUES-1; i++)
+  {
+    percentPriority[NUM_RIDER_QUEUES-1] -= percentPriority[i];
+    idealRiders[NUM_RIDER_QUEUES-1] -= idealRiders[i];
+  }
+
+  /*
+  // shift percent priorities 
+  for (i = 1; i < NUM_RIDER_QUEUES; i++)
+  {
+    temp = percentPriority[i] + percentPriority[i-1];
+    percentPriority[i] = temp;
+  }
+  */
+
+  for (i = 0; i < NUM_RIDER_QUEUES; i++)
+  {
+    printf("%d and %d \n", idealRiders[i], percentPriority[i]);
+  }
+  // ====================================================================  
 
   // initialize ride event queue
   SortedListClass<int> eventQueue;
@@ -113,8 +143,7 @@ int main(int argc, char *argv[])
   eventQueue.insertValue(carArrival);
 
   // initialize first ride of the park
-  ParkRideClass myRide("Space_Mountain", 10);
-
+  ParkRideClass myRide(rideName, rideSeats);
 
 
     
@@ -124,41 +153,69 @@ int main(int argc, char *argv[])
   {
 
     eventQueue.removeFront(clock);
-    printf("\nCURRENT TIME = %d \n", clock);
+    //printf("\nCURRENT TIME = %d \n", clock);
 
     // check the event type
     if (clock == carArrival)
     {
       // handle car arrival event
-      printf(" ===>> new car arrives at %d \n", clock);
+      printf("\n\n ===>> new car arrives at %d \n", clock);
       carArrival = clock + getUniform(carArrivMin, carArrivMax);
       eventQueue.insertValue(carArrival);
-
-      // load up the car by priority level
       myRide.unloadRiders();
-      
+
+      printf("Rider Queues: \n");
+      riderQueues[0].print();
+      riderQueues[1].print();
+      riderQueues[2].print();
+
+
+      printf("    [time to load up the car] \n");
+      for (j = 0; j < NUM_RIDER_QUEUES; j++)
+      {
+        printf("      admit riders from Queue #%d \n", j);
+        for (i = 0; i < idealRiders[j]; i++)
+        {
+          if (myRide.addRider())
+          {
+            checkQueue = riderQueues[j].dequeue(temp);
+            if (!checkQueue)
+            {
+              myRide.delRider();
+            }
+          }
+          if (!checkQueue)
+            break;
+        }
+      }
+
+      i = 0;
+      while (myRide.addRider() && i < NUM_RIDER_QUEUES)
+      {
+        checkQueue = riderQueues[i].dequeue(temp);
+        if (!checkQueue)
+        {
+          myRide.delRider();
+          i += 1;
+        }
+      }
 
     }
     else
     {
+
       // handle rider arrival event
-      randVal = getUniform(minRange, maxRange);
-      if (randVal < percSFP)
+      randVal = getUniform(minPercent, totalPercent);
+      temp = minPercent;
+      for (i = 0; i < NUM_RIDER_QUEUES; i++)
       {
-        // SFP Queue
-        riderQueues[0].enqueue(clock);
+        if ( temp <= randVal && randVal < temp+percentPriority[i] )
+        {
+          riderQueues[i].enqueue(clock);
+          //printf("%d goes to %d\n", randVal, i);
+        }
+        temp += percentPriority[i];
       }
-      else if (percSFP <= randVal && randVal < (percSFP + percFP))
-      {
-        // FP Queue
-        riderQueues[1].enqueue(clock);
-      }
-      else
-      {
-        // STD Queue
-        riderQueues[2].enqueue(clock);
-      }
-      //printf("(added rider to proper queue)\n");
       riderArrival = clock + getNormal(riderArrivMean, riderArrivStd);
       eventQueue.insertValue(riderArrival);
     }
