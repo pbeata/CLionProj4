@@ -20,24 +20,30 @@ void ParkRideClass::printName()
 }
 
 // get number of seats on this attraction
-int ParkRideClass::getNumRiders()
+bool ParkRideClass::carIsFull()
 {
-  return myRiders.getNumElems();
+  filledSeats = myRiders.getNumElems();
+  if (filledSeats < numSeats)
+  {
+    return false;
+  }
+  else
+  {
+    return true;
+  }
 }
 
 // attempt to add a rider
 bool ParkRideClass::addRider(int newRider)
 {
-  filledSeats = myRiders.getNumElems();
-  if (filledSeats < numSeats)
+  if (carIsFull())
   {
-    myRiders.insertValue(newRider);
-    return true;
+    return false;
   }
   else
   {
-    //printf("Car is full! \n");
-    return false;
+    myRiders.insertValue(newRider);
+    return true;
   }
 }
 

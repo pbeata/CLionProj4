@@ -16,7 +16,7 @@ class ParkRideClass
         int inSeats
     );
     void printName();
-    int getNumRiders();
+    bool carIsFull();
     bool addRider(int newRider);
     void unloadRiders();
 

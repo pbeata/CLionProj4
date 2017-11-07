@@ -11,4 +11,4 @@ random.o: random.cpp random.h
 	g++ -c random.cpp -o random.o
 
 clean:
-	rm -rf parkSimulation *.o *~
+	rm -rf parkSimulation *.o *~ a.out
