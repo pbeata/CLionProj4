@@ -4,6 +4,9 @@
 #include <iostream>
 #include <string>
 
+#include "LinkedNodeClass.h"
+#include "SortedListClass.h"
+
 class ParkRideClass
 {
 
@@ -13,15 +16,15 @@ class ParkRideClass
         int inSeats
     );
     void printName();
-    int getNumSeats();
-    bool addRider();
-    bool delRider();
+    int getNumRiders();
+    bool addRider(int newRider);
     void unloadRiders();
 
   private: 
     std::string attractionName;
     int numSeats;
     int filledSeats;
+    SortedListClass<int> myRiders;
 
 };
 

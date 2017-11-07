@@ -68,7 +68,7 @@ void SortedListClass<T>::clear()
 
   if (head == NULL || tail == NULL)
   {
-    std::cout << "list is already empty!" << std::cout;
+    std::cout << "list is already empty!" << std::endl;
     emptyList = true;
   }
 
@@ -233,7 +233,16 @@ bool SortedListClass<T>::removeFront(T &theVal)
   if (temp == 0)
   {
     // list was empty
+    delete(temp);
     return false;
+  }
+  else if (temp->getNext() == NULL)
+  {
+    // then this is the last item in the list
+    theVal = temp->getValue();
+    head = NULL;
+    delete(temp);
+    return true;
   }
   else
   {
@@ -256,6 +265,15 @@ bool SortedListClass<T>::removeLast(T &theVal)
   {
     // list was empty
     return false;
+    delete(temp);
+  }
+  else if (temp->getPrev() == NULL)
+  {
+    // then this is the last item in the list
+    theVal = temp->getValue();
+    tail = NULL;
+    delete(temp);
+    return true;
   }
   else
   {
@@ -277,7 +295,7 @@ int SortedListClass<T>::getNumElems() const
 
   if (temp == 0)
   {
-    std::cout << "this list is empty so count is zero \n";
+    //std::cout << "this list is empty so count is zero \n";
   }
   else
   {

@@ -15,6 +15,7 @@
 
   03-22-17: restarting the project on my free time at night!
   10-31-17: restarted project as a post-doc now at NCSU
+  11-07-17: finished the project without computing rider stats
 */
 
 
@@ -32,26 +33,6 @@
 
 int main(int argc, char *argv[])
 {
-  /*
-   * todo: 01-22-17 Consider using the "switch" command to coordinate the main program development
-  bool testingDataStructuresOnly = false;
-
-  switch (testingDataStructuresOnly)
-  {
-    case false:
-      std::cout << "starting simulation ...\n";
-      break;
-    case true:
-      std::cout << "starting tests of custom data structures ...\n";
-      break;
-    default:
-      std::cout << "must specify what the main program should do\n";
-  }
-  */
-
-  // conditions for running the main program
-  bool testDataStructs = false;
-
   // set the seed value for testing
   int mySeedVal = 100;
   setSeed(mySeedVal);
@@ -65,7 +46,7 @@ int main(int argc, char *argv[])
   int i, j;
   int temp, randVal, clock = 0;
   int riderArrival, carArrival;
-  bool checkQueue = true;
+  bool checkQueue, checkRide;
 
   // ride-specific input
   int rideSeats = 10;
@@ -119,20 +100,6 @@ int main(int argc, char *argv[])
     percentPriority[NUM_RIDER_QUEUES-1] -= percentPriority[i];
     idealRiders[NUM_RIDER_QUEUES-1] -= idealRiders[i];
   }
-
-  /*
-  // shift percent priorities 
-  for (i = 1; i < NUM_RIDER_QUEUES; i++)
-  {
-    temp = percentPriority[i] + percentPriority[i-1];
-    percentPriority[i] = temp;
-  }
-  */
-
-  for (i = 0; i < NUM_RIDER_QUEUES; i++)
-  {
-    printf("%d and %d \n", idealRiders[i], percentPriority[i]);
-  }
   // ====================================================================  
 
   // initialize ride event queue
@@ -148,62 +115,83 @@ int main(int argc, char *argv[])
 
     
   // main event loop (todo: change to while event queue not empty)
-  closing = 200;
-  while (clock < closing)
+  while (eventQueue.getNumElems() > 0)
   {
-
+    //printf("DEBUG====================AA\n");
+    //eventQueue.printForward();
+    //printf("%d\n", eventQueue.getNumElems());
     eventQueue.removeFront(clock);
-    //printf("\nCURRENT TIME = %d \n", clock);
+    //printf("%d clock = %d \n", eventQueue.getNumElems(), clock);
+    //printf("DEBUG====================BB\n");
 
-    // check the event type
+    // CAR ARRIVAL EVENT
     if (clock == carArrival)
     {
       // handle car arrival event
-      printf("\n\n ===>> new car arrives at %d \n", clock);
-      carArrival = clock + getUniform(carArrivMin, carArrivMax);
-      eventQueue.insertValue(carArrival);
+      printf("\n\n\n===>> new car arrives at %d \n", clock);
       myRide.unloadRiders();
-
-      printf("Rider Queues: \n");
+      printf("Rider queues: \n");
       riderQueues[0].print();
       riderQueues[1].print();
       riderQueues[2].print();
+      printf("\n");
 
-
-      printf("    [time to load up the car] \n");
+      // fill car with ideal number of riders first
+      //printf("Attempt to add ideal riders: \n");
       for (j = 0; j < NUM_RIDER_QUEUES; j++)
       {
-        printf("      admit riders from Queue #%d \n", j);
         for (i = 0; i < idealRiders[j]; i++)
         {
-          if (myRide.addRider())
+          checkQueue = riderQueues[j].dequeue(temp);
+          //std::cout << checkQueue << "  ";
+          if (checkQueue)
           {
-            checkQueue = riderQueues[j].dequeue(temp);
-            if (!checkQueue)
+            checkRide = myRide.addRider(temp);
+            if (!checkRide)
             {
-              myRide.delRider();
+              //printf("***Error: could not add new rider to full ride\n");
+              riderQueues[j].enqueue(temp);
             }
           }
-          if (!checkQueue)
-            break;
         }
+        //printf("\n");
       }
 
-      i = 0;
-      while (myRide.addRider() && i < NUM_RIDER_QUEUES)
+      // try to fill remaining available seats in the car
+      //printf("Attempt to fill up the car: \n");
+      j = 0;
+      while (checkRide && j < NUM_RIDER_QUEUES)
       {
-        checkQueue = riderQueues[i].dequeue(temp);
-        if (!checkQueue)
+        checkQueue = riderQueues[j].dequeue(temp);
+        //std::cout << checkQueue << "  ";        
+        if (checkQueue)
         {
-          myRide.delRider();
-          i += 1;
+          checkRide = myRide.addRider(temp);
+          if (!checkRide)
+          {
+            //printf("***Error: could not add new rider to full ride\n");
+            riderQueues[j].enqueue(temp);
+          }
+        }
+        else
+        {
+          j++;
+          //printf("\n");
         }
       }
 
+      // generate next car arrival event
+      carArrival = clock + getUniform(carArrivMin, carArrivMax);
+      //if (carArrival < closing)
+      if (checkQueue)
+      {
+        eventQueue.insertValue(carArrival);
+      }
     }
+
+    // RIDER ARRIVAL EVENT
     else
     {
-
       // handle rider arrival event
       randVal = getUniform(minPercent, totalPercent);
       temp = minPercent;
@@ -212,24 +200,27 @@ int main(int argc, char *argv[])
         if ( temp <= randVal && randVal < temp+percentPriority[i] )
         {
           riderQueues[i].enqueue(clock);
-          //printf("%d goes to %d\n", randVal, i);
         }
         temp += percentPriority[i];
       }
+
+      // generate new rider arrival
       riderArrival = clock + getNormal(riderArrivMean, riderArrivStd);
-      eventQueue.insertValue(riderArrival);
+      if (riderArrival < closing)
+      {
+        eventQueue.insertValue(riderArrival);
+      }
     }
   }
-
-
-
-
 
 
   /*  TESTING CUSTOM DATA STRUCTURES ONLY
    *    -- these are from Phases 1-2
    *    -- completed the testing script 01-22-17
+   *    -- todo: move this to a test driver function
    */
+  /*
+  bool testDataStructs = false;  
   if (testDataStructs)
   {
     std::cout << "\nstarting tests of custom data structures ...\n\n";
@@ -356,6 +347,11 @@ int main(int argc, char *argv[])
     std::cout << "removed value: " << deq << "\n";
     myQ.print();
   }
+  */
+
+
+
+  printf("check at end of program\n");
 
   return 0;
 }
